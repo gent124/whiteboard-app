@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whiteboard Drawing</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        #drawing-container {
+            width: 800px;
+            height: 600px;
+            margin: 20px auto;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .controls {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .controls button, .controls input {
+            margin: 0 10px;
+            padding: 5px 10px;
+        }
+        .controls button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .controls button:hover {
+            background-color: #45a049;
+        }
+        #status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px;
+            background: #333;
+            color: white;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <input type="color" id="color-picker" value="#000000" title="Choose color">
+        <input type="range" id="line-width" min="1" max="20" value="2" title="Adjust line width">
+        <button id="clear-btn">Clear Canvas</button>
+    </div>
+    <div id="drawing-container"></div>
+    <div id="status"></div>
+
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <script>
+        // Status indicator
+        function showStatus(message, isError = false) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.style.display = 'block';
+            status.style.backgroundColor = isError ? '#ff4444' : '#333';
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 3000);
+        }
+
+        // Initialize Socket.IO
+        const socket = io('http://localhost:3000', {
+            auth: {
+                token: 'your-jwt-token-here' // Replace with actual JWT token
+            }
+        });
+
+        socket.on('connect', () => {
+            console.log('Connected to server');
+            showStatus('Connected to server');
+        });
+
+        socket.on('connect_error', (error) => {
+            console.error('Connection error:', error);
+            showStatus('Connection error: ' + error.message, true);
+        });
+
+        // Canvas setup
+        const container = document.getElementById('drawing-container');
+        const canvas = document.createElement('canvas');
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+        canvas.style.border = '1px solid #ccc';
+        container.appendChild(canvas);
+
+        const ctx = canvas.getContext('2d');
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+
+        let isDrawing = false;
+        let currentPath = [];
+
+        // Drawing functions
+        function getMousePos(e) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const pos = getMousePos(e);
+            currentPath = [pos];
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+            console.log('Started drawing at:', pos);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const pos = getMousePos(e);
+            currentPath.push(pos);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            console.log('Drawing at:', pos);
+        }
+
+        function stopDrawing() {
+            if (!isDrawing) return;
+            isDrawing = false;
+            
+            if (currentPath.length > 1) {
+                const element = {
+                    id: crypto.randomUUID(),
+                    type: 'DRAWING',
+                    content: {
+                        points: currentPath
+                    },
+                    position: { x: 0, y: 0 },
+                    style: {
+                        color: ctx.strokeStyle,
+                        strokeWidth: ctx.lineWidth
+                    }
+                };
+
+                socket.emit('drawElement', {
+                    boardId: '1',
+                    element: element
+                });
+                console.log('Sent element:', element);
+            }
+
+            currentPath = [];
+        }
+
+        // Event listeners
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        // Touch events
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            startDrawing(touch);
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            draw(touch);
+        });
+
+        canvas.addEventListener('touchend', stopDrawing);
+
+        // Controls
+        const colorPicker = document.getElementById('color-picker');
+        colorPicker.addEventListener('change', (e) => {
+            ctx.strokeStyle = e.target.value;
+            console.log('Color changed to:', e.target.value);
+        });
+
+        const lineWidth = document.getElementById('line-width');
+        lineWidth.addEventListener('input', (e) => {
+            ctx.lineWidth = parseInt(e.target.value);
+            console.log('Line width changed to:', e.target.value);
+        });
+
+        const clearBtn = document.getElementById('clear-btn');
+        clearBtn.addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            console.log('Canvas cleared');
+        });
+
+        // Join board
+        socket.emit('joinBoard', { boardId: '1' }, (response) => {
+            if (response.error) {
+                console.error('Failed to join board:', response.error);
+                showStatus('Failed to join board: ' + response.error, true);
+            } else {
+                console.log('Joined board successfully');
+                showStatus('Joined board successfully');
+            }
+        });
+
+        // Listen for drawn elements from other users
+        socket.on('elementDrawn', (element) => {
+            console.log('Received element:', element);
+            if (element.type === 'DRAWING') {
+                const points = element.content.points;
+                ctx.strokeStyle = element.style?.color || '#000';
+                ctx.lineWidth = element.style?.strokeWidth || 2;
+                
+                ctx.beginPath();
+                ctx.moveTo(points[0].x, points[0].y);
+                
+                for (let i = 1; i < points.length; i++) {
+                    ctx.lineTo(points[i].x, points[i].y);
+                }
+                
+                ctx.stroke();
+            }
+        });
+    </script>
+</body>
+</html> 
