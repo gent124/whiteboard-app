@@ -1,99 +1,129 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Real-Time Collaborative Whiteboard
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A modern, real-time collaborative whiteboard application built with NestJS and Socket.IO. This application allows multiple users to draw, collaborate, and share ideas in real-time.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🌟 Features
 
-## Description
+- **Real-time Drawing**: Instantly see other users' drawings as they create them
+- **Multi-user Collaboration**: Multiple users can work on the same board simultaneously
+- **Drawing Tools**:
+  - Free-hand drawing
+  - Color picker
+  - Adjustable line width
+  - Clear canvas functionality
+- **Touch Support**: Works on mobile and tablet devices
+- **User Authentication**: Secure JWT-based authentication
+- **Board Management**:
+  - Create new boards
+  - Share boards with collaborators
+  - Export boards as PDF or PNG
+- **Modern UI**: Clean and responsive interface
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🚀 Technology Stack
 
-## Project setup
+- **Backend**:
+  - NestJS - Progressive Node.js framework
+  - Socket.IO - Real-time bidirectional event-based communication
+  - Prisma - Next-generation ORM
+  - PostgreSQL - Robust relational database
+  - JWT - Secure authentication
+  - Swagger/OpenAPI - API documentation
 
+- **Frontend**:
+  - HTML5 Canvas - Drawing functionality
+  - Socket.IO Client - Real-time communication
+  - Modern JavaScript - Clean and efficient code
+
+## 🛠️ Installation
+
+1. Clone the repository:
 ```bash
-$ yarn install
+git clone <repository-url>
+cd whiteboard-app
 ```
 
-## Compile and run the project
-
+2. Install dependencies:
 ```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+yarn install
 ```
 
-## Run tests
-
+3. Set up environment variables:
 ```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+cp .env.example .env
+# Edit .env with your database credentials and JWT secret
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+4. Run database migrations:
 ```bash
-$ yarn install -g mau
-$ mau deploy
+npx prisma migrate dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+5. Start the application:
+```bash
+yarn start
+```
 
-## Resources
+## 🔑 Authentication
 
-Check out a few resources that may come in handy when working with NestJS:
+The application uses JWT-based authentication. To use the whiteboard:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+1. Register a new user account
+2. Log in to receive a JWT token
+3. Use the token for WebSocket authentication
 
-## Support
+## 💡 API Documentation
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+API documentation is available through Swagger UI at:
+```
+http://localhost:3000/api
+```
 
-## Stay in touch
+## 🎨 Whiteboard Features
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Drawing Tools
+- **Color Selection**: Choose any color for drawing
+- **Line Width**: Adjust stroke width from 1-20 pixels
+- **Clear Canvas**: Reset the board with one click
 
-## License
+### Real-time Collaboration
+- Join boards using unique board IDs
+- See other users' drawings in real-time
+- Collaborative features like:
+  - Drawing synchronization
+  - Board state persistence
+  - Multi-user support
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Export Options
+- Export boards as PDF documents
+- Save boards as PNG images
+- Preserve all drawings and elements
+
+## 🔒 Security
+
+- JWT-based authentication
+- Protected WebSocket connections
+- Board access control
+- Input validation and sanitization
+
+## 📱 Mobile Support
+
+The whiteboard is fully responsive and supports:
+- Touch events for drawing
+- Mobile-friendly interface
+- Gesture recognition
+- Cross-device compatibility
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit pull requests.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- NestJS team for the amazing framework
+- Socket.IO for real-time capabilities
+- Prisma team for the excellent ORM
+- All contributors and users of this application

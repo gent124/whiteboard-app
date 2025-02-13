@@ -2,7 +2,7 @@ import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from '../shared/interfaces/user.interface';
 import { LocalAuthGuard } from 'src/shared/guards/local-auth.guard';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 interface RequestWithUser extends Request {
   user: User;
@@ -14,8 +14,8 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @ApiOperation({ summary: 'Login with email and password' })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'Returns JWT token and user info',
     schema: {
       type: 'object',
@@ -26,11 +26,11 @@ export class AuthController {
           properties: {
             id: { type: 'string' },
             email: { type: 'string' },
-            name: { type: 'string' }
-          }
-        }
-      }
-    }
+            name: { type: 'string' },
+          },
+        },
+      },
+    },
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(LocalAuthGuard)
@@ -40,8 +40,8 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'Register new user' })
-  @ApiResponse({ 
-    status: 201, 
+  @ApiResponse({
+    status: 201,
     description: 'User successfully registered',
     schema: {
       type: 'object',
@@ -52,11 +52,11 @@ export class AuthController {
           properties: {
             id: { type: 'string' },
             email: { type: 'string' },
-            name: { type: 'string' }
-          }
-        }
-      }
-    }
+            name: { type: 'string' },
+          },
+        },
+      },
+    },
   })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @Post('register')
