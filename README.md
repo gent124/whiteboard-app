@@ -29,11 +29,6 @@ A modern, real-time collaborative whiteboard application built with NestJS and S
   - JWT - Secure authentication
   - Swagger/OpenAPI - API documentation
 
-- **Frontend**:
-  - HTML5 Canvas - Drawing functionality
-  - Socket.IO Client - Real-time communication
-  - Modern JavaScript - Clean and efficient code
-
 ## 🛠️ Installation
 
 1. Clone the repository:
@@ -93,25 +88,12 @@ http://localhost:3000/api
   - Board state persistence
   - Multi-user support
 
-### Export Options
-- Export boards as PDF documents
-- Save boards as PNG images
-- Preserve all drawings and elements
-
 ## 🔒 Security
 
 - JWT-based authentication
 - Protected WebSocket connections
 - Board access control
 - Input validation and sanitization
-
-## 📱 Mobile Support
-
-The whiteboard is fully responsive and supports:
-- Touch events for drawing
-- Mobile-friendly interface
-- Gesture recognition
-- Cross-device compatibility
 
 ## 🤝 Contributing
 
